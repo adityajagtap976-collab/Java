@@ -1,0 +1,10 @@
+{
+  "folders": [
+    { "path": "atm" },
+    { "path": "_template" }
+  ],
+  "settings": {
+    "files.eol": "\n",
+    "editor.formatOnSave": true
+  }
+}
