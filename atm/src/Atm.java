@@ -1,84 +1,89 @@
-final Map<String, Account> accounts = new HashMap<>();
+import java.util.Scanner;
 
-void main() {
-    seedAccounts();
-    IO.println("=== WELCOME TO JAVA BANK ATM ===");
+public class Atm {
 
-    while (true) {
-        String card = IO.readln("\nInsert card (card number, or 'off' to power off): ");
-        if (card == null || card.trim().equalsIgnoreCase("off")) {
-            IO.println("ATM powered off.");
-            return;
-        }
-        Account account = login(card.trim());
-        if (account != null) {
-            runSession(account);
-        }
-    }
-}
+    static final int CORRECT_PIN = 1234;
 
-Account login(String cardNumber) {
-    Account account = accounts.get(cardNumber);
-    if (account == null) {
-        IO.println("Card not recognized.");
-        return null;
+    static void showMenu() {
+        System.out.println();
+        System.out.println("1. Check Balance");
+        System.out.println("2. Deposit");
+        System.out.println("3. Withdraw");
+        System.out.println("4. Exit");
+        System.out.print("Choose an option: ");
     }
-    if (account.isLocked()) {
-        IO.println("This card is locked. Contact your bank.");
-        return null;
-    }
-    while (!account.isLocked()) {
-        String pin = IO.readln("Enter 4-digit PIN: ");
-        if (pin == null) {
-            return null;
-        }
-        if (account.checkPin(pin)) {
-            IO.println("PIN accepted.");
-            return account;
-        }
-        if (account.isLocked()) {
-            IO.println("Wrong PIN. Card locked. Contact your bank.");
-        } else {
-            IO.println("Wrong PIN. Attempts left: " + account.attemptsLeft());
-        }
-    }
-    return null;
-}
 
-void runSession(Account account) {
-    IO.println("Hello, " + account.getHolderName() + "!");
-    while (true) {
-        showMenu();
-        String choice = IO.readln("Choose an option: ");
-        if (choice == null) {
-            return;
-        }
-        switch (choice.trim()) {
-            case "1" -> IO.println("Balance: " + formatMoney(account.getBalanceInCents()));
-            case "2" -> {
-                IO.println("Card returned. Goodbye, " + account.getHolderName() + ".");
-                return;
+    static boolean login(Scanner scanner) {
+        for (int attempt = 1; attempt <= 3; attempt++) {
+            System.out.print("Enter your PIN: ");
+            int enteredPin = scanner.nextInt();
+
+            if (enteredPin == CORRECT_PIN) {
+                return true;
             }
-            default -> IO.println("Invalid option. Enter 1 or 2.");
+            System.out.println("Wrong PIN. Attempt " + attempt + " of 3.");
         }
+        return false;
     }
-}
 
-void seedAccounts() {
-    accounts.put("1001", new Account("1001", "Aisha", "1234", 100_000L));
-    accounts.put("1002", new Account("1002", "Ben", "4321", 25_050L));
-    accounts.put("1003", new Account("1003", "Chen", "0042", 50_000L));
-}
+    static double deposit(Scanner scanner, double balance) {
+        System.out.print("Enter deposit amount: ");
+        double amount = scanner.nextDouble();
 
-void showMenu() {
-    IO.print("""
+        if (amount <= 0) {
+            System.out.println("Deposit must be more than 0.");
+            return balance;
+        }
 
-            --- MENU ---
-            1) Check balance
-            2) Exit
-            """);
-}
+        balance += amount;
+        System.out.printf("Deposited $%.2f. New balance: $%.2f%n", amount, balance);
+        return balance;
+    }
 
-String formatMoney(long cents) {
-    return "$%d.%02d".formatted(cents / 100, cents % 100);
+    static double withdraw(Scanner scanner, double balance) {
+        System.out.print("Enter withdrawal amount: ");
+        double amount = scanner.nextDouble();
+
+        if (amount <= 0) {
+            System.out.println("Withdrawal must be more than 0.");
+        } else if (amount > balance) {
+            System.out.println("Insufficient funds.");
+        } else {
+            balance -= amount;
+            System.out.printf("Withdrew $%.2f. New balance: $%.2f%n", amount, balance);
+        }
+        return balance;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double balance = 1000.00;
+
+        System.out.println("=== Welcome to Java ATM ===");
+
+        if (!login(scanner)) {
+            System.out.println("Card locked.");
+            scanner.close();
+            return;
+        }
+
+        boolean running = true;
+        while (running) {
+            showMenu();
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1 -> System.out.printf("Your balance: $%.2f%n", balance);
+                case 2 -> balance = deposit(scanner, balance);
+                case 3 -> balance = withdraw(scanner, balance);
+                case 4 -> {
+                    System.out.println("Goodbye!");
+                    running = false;
+                }
+                default -> System.out.println("Invalid option.");
+            }
+        }
+
+        scanner.close();
+    }
 }
