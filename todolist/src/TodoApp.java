@@ -25,7 +25,16 @@ public class TodoApp {
             return -1;
         }
         System.out.println(verb + " which number? ");
-        int number = Integer.parseInt(scanner.nextLine());
+        String input = scanner.nextLine();
+
+        int number;
+        try {
+            number = Integer.parseInt(input.trim());
+        } catch (NumberFormatException e) {
+            System.out.println("That's not a number: " + input);
+            return -1;
+        }
+
         if (number < 1 || number > tasks.size()) {
             System.out.println("No task with that number.");
             return -1;
