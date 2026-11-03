@@ -1,17 +1,26 @@
 public class Task {
-    String title;
-    boolean done;
+    private String title;
+    private boolean done;
 
     public Task(String title) {
         this.title = title;
         this.done = false;
     }
 
+    public String getTitle() {
+        return this.title;
+    }
+
+    public boolean isDone() {
+        return this.done;
+    }
+
     public void markDone() {
         this.done = true;
     }
 
-    public String display() {
+    @Override
+    public String toString() {
         if (this.done) {
             return "[x] " + this.title;
         }

@@ -9,7 +9,7 @@ public class TodoApp {
 
     static final String FILE_NAME = "tasks.txt";
 
-    static ArrayList<Task> loadTasks() {
+    static ArrayList<Task> loadTasks() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
         Path path = Path.of(FILE_NAME);
 
@@ -17,23 +17,19 @@ public class TodoApp {
             return tasks;
         }
 
-        try {
-            List<String> lines = Files.readAllLines(path);
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-                String[] parts = line.split("\\|", 2);
-                if (parts.length < 2) {
-                    System.out.println("Skipping bad line: " + line);
-                } else {
-                    Task t = new Task(parts[1]);
-                    if (Boolean.parseBoolean(parts[0])) {
-                        t.markDone();
-                    }
-                    tasks.add(t);
+        List<String> lines = Files.readAllLines(path);
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            String[] parts = line.split("\\|", 2);
+            if (parts.length < 2) {
+                System.out.println("Skipping bad line: " + line);
+            } else {
+                Task t = new Task(parts[1]);
+                if (Boolean.parseBoolean(parts[0])) {
+                    t.markDone();
                 }
+                tasks.add(t);
             }
-        } catch (IOException e) {
-            System.out.println("Could mot load: " + e.getMessage());
         }
         return tasks;
     }
@@ -68,7 +64,7 @@ public class TodoApp {
             return;
         }
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + ". " + tasks.get(i).display());
+            System.out.println((i + 1) + ". " + tasks.get(i));
         }
     }
 
@@ -102,12 +98,12 @@ public class TodoApp {
             return;
         }
         Task t = tasks.get(index);
-        if (t.done) {
+        if (t.isDone()) {
             System.out.println("Already done.");
         } else {
             t.markDone();
             saveTasks(tasks);
-            System.out.println("Completed: " + t.title);
+            System.out.println("Completed: " + t.getTitle());
         }
     }
 
@@ -118,13 +114,21 @@ public class TodoApp {
         }
         Task removed = tasks.remove(index);
         saveTasks(tasks);
-        System.out.println("Deleted: " + removed.title);
+        System.out.println("Deleted: " + removed.getTitle());
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        ArrayList<Task> tasks = loadTasks();
+        ArrayList<Task> tasks;
+        try {
+            tasks = loadTasks();
+        } catch (IOException e) {
+            System.out.println("Could not load " + FILE_NAME + ": " + e.getMessage());
+            System.out.println("Exiting so your file is not overwritten.");
+            scanner.close();
+            return;
+        }
         System.out.println("Loaded " + tasks.size() + " task(s).");
         boolean running = true;
 
@@ -136,7 +140,7 @@ public class TodoApp {
             System.out.println("4. Delete task");
             System.out.println("5. Exit");
             System.out.print("Choose: ");
-            String choice = scanner.nextLine();
+            String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1" -> addTask(scanner, tasks);
