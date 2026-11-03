@@ -17,4 +17,8 @@ public class Task {
         }
         return "[ ] " + this.title;
     }
+
+    public String toFileLine() {
+        return this.done + "|" + this.title;
+    }
 }
