@@ -1,7 +1,14 @@
 {
   "folders": [
-    { "path": "atm" },
-    { "path": "_template" }
+    {
+      "path": "atm"
+    },
+    {
+      "path": "_template"
+    },
+    {
+      "path": "todolist"
+    }
   ],
   "settings": {
     "files.eol": "\n",
