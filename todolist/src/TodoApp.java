@@ -5,7 +5,7 @@ public class TodoApp {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        ArrayList<String> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
         boolean running = true;
 
         while (running) {
@@ -21,7 +21,8 @@ public class TodoApp {
                 case "1" -> {
                     System.out.print("Tasks: ");
                     String text = scanner.nextLine();
-                    tasks.add(text);
+                    Task newTask = new Task(text);
+                    tasks.add(newTask);
                     System.out.println("Added. Total: " + tasks.size());
                 }
 
@@ -30,7 +31,8 @@ public class TodoApp {
                         System.out.println("No tasks yet.");
                     } else {
                         for (int i = 0; i < tasks.size(); i++) {
-                            System.out.println((i + 1) + ". " + tasks.get(i));
+                            Task t = tasks.get(i);
+                            System.out.println((i + 1) + ". " + t.title + " [done: " + t.done + "]");
                         }
                     }
                 }
@@ -44,8 +46,8 @@ public class TodoApp {
                         if (number < 1 || number > tasks.size()) {
                             System.out.println("No task with that number.");
                         } else {
-                            String removed = tasks.remove(number - 1);
-                            System.out.println("Deleted: " + removed);
+                            Task removed = tasks.remove(number - 1);
+                            System.out.println("Deleted: " + removed.title);
                         }
                     }
                 }
