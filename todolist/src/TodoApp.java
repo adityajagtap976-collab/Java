@@ -2,11 +2,41 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class TodoApp {
 
     static final String FILE_NAME = "tasks.txt";
+
+    static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        Path path = Path.of(FILE_NAME);
+
+        if (!Files.exists(path)) {
+            return tasks;
+        }
+
+        try {
+            List<String> lines = Files.readAllLines(path);
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                String[] parts = line.split("\\|", 2);
+                if (parts.length < 2) {
+                    System.out.println("Skipping bad line: " + line);
+                } else {
+                    Task t = new Task(parts[1]);
+                    if (Boolean.parseBoolean(parts[0])) {
+                        t.markDone();
+                    }
+                    tasks.add(t);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Could mot load: " + e.getMessage());
+        }
+        return tasks;
+    }
 
     static void saveTasks(ArrayList<Task> tasks) {
         ArrayList<String> lines = new ArrayList<>();
@@ -42,6 +72,7 @@ public class TodoApp {
         }
     }
 
+    // Returns a 0-based index, or -1 if nothing valid was chosen
     static int askForIndex(Scanner scanner, ArrayList<Task> tasks, String verb) {
         if (tasks.isEmpty()) {
             System.out.println("No tasks yet.");
@@ -54,7 +85,7 @@ public class TodoApp {
         try {
             number = Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            System.out.println("That's not a number: " + input);
+            System.out.println("That's not a number: \"" + input + "\"");
             return -1;
         }
 
@@ -93,7 +124,8 @@ public class TodoApp {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = loadTasks();
+        System.out.println("Loaded " + tasks.size() + " task(s).");
         boolean running = true;
 
         while (running) {
