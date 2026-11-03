@@ -6,4 +6,15 @@ public class Task {
         this.title = title;
         this.done = false;
     }
+
+    public void markDone() {
+        this.done = true;
+    }
+
+    public String display() {
+        if (this.done) {
+            return "[x] " + this.title;
+        }
+        return "[ ] " + this.title;
+    }
 }

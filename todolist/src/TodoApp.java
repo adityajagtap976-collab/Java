@@ -12,8 +12,9 @@ public class TodoApp {
             System.out.println("\n=== TO-DO LIST ===");
             System.out.println("1. Add Task");
             System.out.println("2. List Task");
-            System.out.println("3. Delete Task");
-            System.out.println("4. Exit");
+            System.out.println("3. Complete Task");
+            System.out.println("4. Delete Task");
+            System.out.println("5. Exit");
             System.out.print("Choose: ");
             String choice = scanner.nextLine();
 
@@ -31,13 +32,28 @@ public class TodoApp {
                         System.out.println("No tasks yet.");
                     } else {
                         for (int i = 0; i < tasks.size(); i++) {
-                            Task t = tasks.get(i);
-                            System.out.println((i + 1) + ". " + t.title + " [done: " + t.done + "]");
+                            System.out.println((i + 1) + ". " + tasks.get(i).display());
                         }
                     }
                 }
 
                 case "3" -> {
+                    if (tasks.isEmpty()) {
+                        System.out.println("Nothing to complete.");
+                    } else {
+                        System.out.println("Select task number to complete.");
+                        int number = Integer.parseInt(scanner.nextLine());
+                        if (number < 1 || number > tasks.size()) {
+                            System.out.println("No task with that number.");
+                        } else {
+                            Task t = tasks.get(number - 1);
+                            t.markDone();
+                            System.out.println("Completed: " + t.title);
+                        }
+                    }
+                }
+
+                case "4" -> {
                     if (tasks.isEmpty()) {
                         System.out.println("Nothing to delete.");
                     } else {
@@ -52,7 +68,7 @@ public class TodoApp {
                     }
                 }
 
-                case "4" -> running = false;
+                case "5" -> running = false;
                 default -> System.out.println("Invalid choice.");
             }
         }
