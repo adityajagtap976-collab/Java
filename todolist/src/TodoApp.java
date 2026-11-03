@@ -1,44 +1,56 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TodoApp {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        String[] tasks = new String[5];
-        int count = 0;
+        ArrayList<String> tasks = new ArrayList<>();
         boolean running = true;
 
         while (running) {
             System.out.println("\n=== TO-DO LIST ===");
             System.out.println("1. Add Task");
             System.out.println("2. List Task");
-            System.out.println("3. Exit");
+            System.out.println("3. Delete Task");
+            System.out.println("4. Exit");
             System.out.print("Choose: ");
             String choice = scanner.nextLine();
 
             switch (choice) {
                 case "1" -> {
-                    if (count == tasks.length) {
-                        System.out.println("List is full (" + tasks.length + " max).");
-                    } else {
-                        System.out.print("Task: ");
-                        tasks[count] = scanner.nextLine();
-                        count++;
-                        System.out.println("Task added successfully");
-                    }
+                    System.out.print("Tasks: ");
+                    String text = scanner.nextLine();
+                    tasks.add(text);
+                    System.out.println("Added. Total: " + tasks.size());
                 }
 
                 case "2" -> {
-                    if (count == 0) {
+                    if (tasks.isEmpty()) {
                         System.out.println("No tasks yet.");
                     } else {
-                        for (int i = 0; i < count; i++) {
-                            System.out.println((i + 1) + ". " + tasks[i]);
+                        for (int i = 0; i < tasks.size(); i++) {
+                            System.out.println((i + 1) + ". " + tasks.get(i));
                         }
                     }
                 }
 
-                case "3" -> running = false;
+                case "3" -> {
+                    if (tasks.isEmpty()) {
+                        System.out.println("Nothing to delete.");
+                    } else {
+                        System.out.print("Select task number to delete: ");
+                        int number = Integer.parseInt(scanner.nextLine());
+                        if (number < 1 || number > tasks.size()) {
+                            System.out.println("No task with that number.");
+                        } else {
+                            String removed = tasks.remove(number - 1);
+                            System.out.println("Deleted: " + removed);
+                        }
+                    }
+                }
+
+                case "4" -> running = false;
                 default -> System.out.println("Invalid choice.");
             }
         }
