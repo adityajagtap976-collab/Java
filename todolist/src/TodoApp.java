@@ -20,15 +20,20 @@ public class TodoApp {
         List<String> lines = Files.readAllLines(path);
         for (int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
-            String[] parts = line.split("\\|", 2);
-            if (parts.length < 2) {
+            String[] parts = line.split("\\|", 3);
+            if (parts.length < 3) {
                 System.out.println("Skipping bad line: " + line);
-            } else {
-                Task t = new Task(parts[1]);
+                continue;
+            }
+            try {
+                Priority priority = Priority.valueOf(parts[1]);
+                Task t = new Task(parts[2], priority);
                 if (Boolean.parseBoolean(parts[0])) {
                     t.markDone();
                 }
                 tasks.add(t);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Skipping bad priority: " + line);
             }
         }
         return tasks;
@@ -46,6 +51,17 @@ public class TodoApp {
         }
     }
 
+    static Priority askForPriority(Scanner scanner) {
+        System.out.print("Priority (1=LOW, 2=MEDIUM, 3=HIGH): ");
+        String input = scanner.nextLine();
+        return switch (input) {
+            case "1" -> Priority.LOW;
+            case "2" -> Priority.MEDIUM;
+            case "3" -> Priority.HIGH;
+            default -> null;
+        };
+    }
+
     static void addTask(Scanner scanner, ArrayList<Task> tasks) {
         System.out.print("Task: ");
         String text = scanner.nextLine().trim();
@@ -53,7 +69,12 @@ public class TodoApp {
             System.out.println("Title can't be empty.");
             return;
         }
-        tasks.add(new Task(text));
+        Priority priority = askForPriority(scanner);
+        if (priority == null) {
+            System.out.println("Invalid priority. Task not added.");
+            return;
+        }
+        tasks.add(new Task(text, priority));
         saveTasks(tasks);
         System.out.println("Added. Total: " + tasks.size());
     }
@@ -65,6 +86,20 @@ public class TodoApp {
         }
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + ". " + tasks.get(i));
+        }
+    }
+
+    static void listHighPriority(ArrayList<Task> tasks) {
+        int shown = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            if (t.getPriority() == Priority.HIGH) {
+                System.out.println((i + 1) + ". " + t);
+                shown++;
+            }
+        }
+        if (shown == 0) {
+            System.out.println("No HIGH priority tasks.");
         }
     }
 
@@ -138,7 +173,8 @@ public class TodoApp {
             System.out.println("2. List tasks");
             System.out.println("3. Complete task");
             System.out.println("4. Delete task");
-            System.out.println("5. Exit");
+            System.out.println("5. List HIGH priority only");
+            System.out.println("6. Exit");
             System.out.print("Choose: ");
             String choice = scanner.nextLine().trim();
 
@@ -147,7 +183,8 @@ public class TodoApp {
                 case "2" -> listTasks(tasks);
                 case "3" -> completeTask(scanner, tasks);
                 case "4" -> deleteTask(scanner, tasks);
-                case "5" -> running = false;
+                case "5" -> listHighPriority(tasks);
+                case "6" -> running = false;
                 default -> System.out.println("Invaild choice.");
             }
 

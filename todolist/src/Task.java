@@ -1,9 +1,11 @@
 public class Task {
     private String title;
     private boolean done;
+    private Priority priority;
 
-    public Task(String title) {
+    public Task(String title, Priority priority) {
         this.title = title;
+        this.priority = priority;
         this.done = false;
     }
 
@@ -15,6 +17,10 @@ public class Task {
         return this.done;
     }
 
+    public Priority getPriority() {
+        return this.priority;
+    }
+
     public void markDone() {
         this.done = true;
     }
@@ -22,12 +28,12 @@ public class Task {
     @Override
     public String toString() {
         if (this.done) {
-            return "[x] " + this.title;
+            return "[x] (" + this.priority + ") " + this.title;
         }
-        return "[ ] " + this.title;
+        return "[ ] (" + this.priority + ") " + this.title;
     }
 
     public String toFileLine() {
-        return this.done + "|" + this.title;
+        return this.done + "|" + this.priority + "|" + this.title;
     }
 }

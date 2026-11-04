@@ -1,3 +1,1 @@
-true|Coding
-true|Dinner
-false|Gaming
+false|MEDIUM|uiirbo
