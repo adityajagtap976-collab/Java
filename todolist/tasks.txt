@@ -1,1 +1,3 @@
-false|MEDIUM|uiirbo
+true|LOW|Dinner
+true|MEDIUM|Coding
+false|HIGH|Gaming
