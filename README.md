@@ -1,34 +1,160 @@
-# Java Workspace
+# ☕ Java Console Projects
 
-One repo, one folder per project. JDK 25, no build tools.
+> Small, practical Java applications built to make core programming concepts tangible.
 
-## Open it
-`File > Open Workspace from File...` > `Java.code-workspace`
-(Not "Open Folder". The workspace file is what makes each project work independently.)
+This repository is a focused Java learning workspace. Each project is an independent, interactive console application with its own source directory, entry point, and README where additional project-specific details are useful.
 
-## Layout
-```
-Java/
-  Java.code-workspace   <- always open this
-  new-project.ps1       <- creates a new project from _template
-  _template/            <- never edit your real work here
-  atm/                  <- project 1
-    src/Atm.java
+---
+
+## 📌 What is Inside?
+
+| Project | Highlights | Main Class |
+| :--- | :--- | :--- |
+| [**ATM Simulator**](./atm/) | PIN authentication, menus, deposits, withdrawals, and balance validation | `Atm` |
+| [**Bank Account System**](./Bank-Account-System/) | Encapsulation, collections, account management, validation, and `BigDecimal` money handling | `BankApp` |
+| [**To-Do List**](./todolist/) | Enums, task state, priority filtering, input validation, and file persistence | `TodoApp` |
+
+*The projects intentionally move from straightforward procedural flow to more structured object-oriented design and local persistence.*
+
+---
+
+## 🛠️ Tech Stack & Prerequisites
+
+* **Java Version:** **Java 17** (LTS)
+* **Libraries:** Standard Java SE libraries only
+* **UI:** Console-based user interfaces
+* **Dependencies:** None (No external tools or build automation frameworks required)
+
+### Verify Java Installation
+
+Install a [JDK 17 distribution](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) and ensure both `java` and `javac` are available on your `PATH`.
+
+```powershell
+java -version
+javac -version
 ```
 
-## New project
-```
-.\new-project.ps1 todolist
-```
-Then rename `src/Main.java` to match your project and reload the window.
+> **Why Java 17?** Java 17 is the supported language level for this repository and the version used across all examples.
 
-## Run a project
+---
+
+## 🚀 Quick Start
+
+Clone the repository, choose a project, compile it, and run its main class:
+
+```powershell
+git clone https://github.com/adityajagtap976-collab/Java.git
+Set-Location Java
+
+Set-Location Bank-Account-System
+javac -d bin src/*.java
+java -cp bin BankApp
 ```
+
+Return to the repository root between projects using:
+
+```powershell
+Set-Location ..
+```
+
+---
+
+## 💻 Running Each Project
+
+### 💳 ATM Simulator
+
+The ATM can be launched directly from the repository root without an explicit separate compilation step:
+
+```powershell
 java atm/src/Atm.java
 ```
-Run from the `Java` folder. One file = `java path/to/File.java`.
 
-## Rules
-1. One project = one folder. Never mix two projects in one `src`.
-2. Commit after every working chunk: `git add . && git commit -m "atm: chunk 2 variables"`.
-3. Compiled output (`bin/`) is never committed.
+**Demo State:**
+* **PIN:** `1234`
+* **Starting Balance:** `$1,000.00`
+* **Max Login Attempts:** `3`
+
+---
+
+### 🏦 Bank Account System
+
+```powershell
+Set-Location Bank-Account-System
+javac -d bin src/*.java
+java -cp bin BankApp
+Set-Location ..
+```
+
+You can open accounts, deposit funds, list accounts, and look up an account by ID. Monetary values are handled precision-safely using `BigDecimal` rather than floating-point primitives.
+
+---
+
+### 📋 To-Do List
+
+Run this application from its own project directory so its local `tasks.txt` persistence file is resolved correctly:
+
+```powershell
+Set-Location todolist
+javac -d bin src/*.java
+java -cp bin TodoApp
+Set-Location ..
+```
+
+Tasks are automatically saved to and loaded from `todolist/tasks.txt` whenever state changes occur. This data file is local to your environment and intentionally ignored by Git.
+
+---
+
+## 📁 Repository Layout
+
+```text
+Java/
+├── Bank-Account-System/
+│   ├── src/                  # Account, BankManager, and BankApp
+│   └── bin/                  # Generated .class files
+├── atm/
+│   ├── src/Atm.java
+│   ├── bin/                  # Generated .class files
+│   └── README.md
+├── todolist/
+│   ├── src/                  # Priority, Task, and TodoApp
+│   ├── bin/                  # Generated .class files
+│   ├── tasks.txt             # Local task data
+│   └── README.md
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 🗺️ Learning Path
+
+1. **Start with the [ATM Simulator](./atm/)** to practice control flow, console input, menus, and boundary validation.
+2. **Explore the [Bank Account System](./Bank-Account-System/)** for custom classes, encapsulation, collections, exception handling, and safe monetary math.
+3. **Study the [To-Do List](./todolist/)** for custom enums, mutable state tracking, file I/O operations, and persistence.
+
+---
+
+## 📐 Development Conventions
+
+* Keep each application self-contained in its own folder.
+* Put Java source files in `src/` and generated bytecode outputs in `bin/`.
+* Run the To-Do List app directly from `todolist/` so relative file paths behave as intended.
+* Prefer small, focused changes that keep each console application runnable.
+* Keep generated files, IDE settings, and local runtime data out of commits.
+
+---
+
+## 🤝 Contributing
+
+Improvements are welcome! When adding a new project, ensure you include:
+
+1. A dedicated folder with a `src/` directory.
+2. A clear `main` entry point.
+3. Execution instructions and a concise feature summary.
+4. Java 17 compatibility.
+
+---
+
+## 📄 License
+
+This is a personal learning workspace. No license has been specified yet.
